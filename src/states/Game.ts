@@ -5,8 +5,9 @@ export class Game extends Phaser.State {
   private candy: Phaser.Sprite;
   private pet: Phaser.Sprite;
   private rotate: Phaser.Sprite;
-  private selectedItem: any;
+  private selectedItem: Phaser.Sprite | null;
   private toy: Phaser.Sprite;
+  private uiBlocked: boolean;
 
   public init() {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -35,20 +36,20 @@ export class Game extends Phaser.State {
 
     this.apple = this.game.add.sprite(72, 570, 'apple');
     this.apple.anchor.setTo(0.5);
-    this.apple.inputEnabled = true;
     this.apple.data = { health: 20 };
+    this.apple.inputEnabled = true;
     this.apple.events.onInputDown.add(this.pickItem, this);
 
     this.candy = this.game.add.sprite(144, 570, 'candy');
     this.candy.anchor.setTo(0.5);
-    this.candy.inputEnabled = true;
     this.candy.data = { health: -10, fun: 10 };
+    this.candy.inputEnabled = true;
     this.candy.events.onInputDown.add(this.pickItem, this);
 
     this.toy = this.game.add.sprite(216, 570, 'toy');
     this.toy.anchor.setTo(0.5);
-    this.toy.inputEnabled = true;
     this.toy.data = { fun: 20 };
+    this.toy.inputEnabled = true;
     this.toy.events.onInputDown.add(this.pickItem, this);
 
     this.rotate = this.game.add.sprite(288, 570, 'rotate');
@@ -66,11 +67,27 @@ export class Game extends Phaser.State {
     this.selectedItem = null;
   }
 
+  private clearSelection() {
+    this.buttons.forEach((button) => { button.alpha = 1; });
+
+    this.selectedItem = null;
+  }
+
   private pickItem(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
-    console.log('pick item');
+    if (!this.uiBlocked) {
+      console.log('pick item');
+      this.clearSelection();
+      sprite.alpha = 0.4;
+      this.selectedItem = sprite;
+    }
   }
 
   private rotatePet(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
-    console.log('rotating...');
+    if (!this.uiBlocked) {
+      console.log('rotating...');
+      this.uiBlocked = true;
+      this.clearSelection();
+      sprite.alpha = 0.4;
+    }
   }
 }
