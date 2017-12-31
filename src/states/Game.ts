@@ -1,9 +1,11 @@
 export class Game extends Phaser.State {
   private apple: Phaser.Sprite;
   private backyard: Phaser.Sprite;
+  private buttons: Phaser.Sprite[];
   private candy: Phaser.Sprite;
   private pet: Phaser.Sprite;
   private rotate: Phaser.Sprite;
+  private selectedItem: any;
   private toy: Phaser.Sprite;
 
   public init() {
@@ -27,14 +29,48 @@ export class Game extends Phaser.State {
 
     this.pet = this.game.add.sprite(100, 400, 'pet');
     this.pet.anchor.setTo(0.5);
-    this.pet.data = {
-      health: 100,
-      fun: 100,
-    };
+    this.pet.data = { health: 100, fun: 100 };
+    this.pet.inputEnabled = true;
+    this.pet.input.enableDrag();
 
     this.apple = this.game.add.sprite(72, 570, 'apple');
+    this.apple.anchor.setTo(0.5);
+    this.apple.inputEnabled = true;
+    this.apple.data = { health: 20 };
+    this.apple.events.onInputDown.add(this.pickItem, this);
+
     this.candy = this.game.add.sprite(144, 570, 'candy');
+    this.candy.anchor.setTo(0.5);
+    this.candy.inputEnabled = true;
+    this.candy.data = { health: -10, fun: 10 };
+    this.candy.events.onInputDown.add(this.pickItem, this);
+
     this.toy = this.game.add.sprite(216, 570, 'toy');
+    this.toy.anchor.setTo(0.5);
+    this.toy.inputEnabled = true;
+    this.toy.data = { fun: 20 };
+    this.toy.events.onInputDown.add(this.pickItem, this);
+
     this.rotate = this.game.add.sprite(288, 570, 'rotate');
+    this.rotate.anchor.setTo(0.5);
+    this.rotate.inputEnabled = true;
+    this.rotate.events.onInputDown.add(this.rotatePet, this);
+
+    this.buttons = [
+      this.apple,
+      this.candy,
+      this.toy,
+      this.rotate,
+    ];
+
+    this.selectedItem = null;
+  }
+
+  private pickItem(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
+    console.log('pick item');
+  }
+
+  private rotatePet(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
+    console.log('rotating...');
   }
 }
