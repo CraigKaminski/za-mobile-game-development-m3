@@ -6,6 +6,6 @@ import 'phaser';
 
 import { Game } from './states/Game';
 
-const game = new Phaser.Game(800, 600, Phaser.AUTO, '', null);
+const game = new Phaser.Game(360, 640, Phaser.AUTO, '', null);
 game.state.add('Game', Game);
 game.state.start('Game');
