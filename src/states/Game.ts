@@ -32,6 +32,7 @@ export class Game extends Phaser.State {
 
     this.pet = this.game.add.sprite(100, 400, 'pet');
     this.pet.anchor.setTo(0.5);
+    this.pet.animations.add('funnyfaces', [1, 2, 3, 2, 1], 7, false);
     this.pet.data = { health: 100, fun: 100 };
     this.pet.inputEnabled = true;
     this.pet.input.enableDrag();
@@ -77,7 +78,6 @@ export class Game extends Phaser.State {
 
   private pickItem(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
     if (!this.uiBlocked) {
-      console.log('pick item');
       this.clearSelection();
       sprite.alpha = 0.4;
       this.selectedItem = sprite;
@@ -96,6 +96,7 @@ export class Game extends Phaser.State {
       petMovement.to({ x, y }, 700);
       petMovement.onComplete.add(() => {
         newItem.destroy();
+        this.pet.animations.play('funnyfaces');
         this.uiBlocked = false;
         for (const stat in newItem.data) {
           if (newItem.data.hasOwnProperty(stat)) {
@@ -109,7 +110,6 @@ export class Game extends Phaser.State {
 
   private rotatePet(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
     if (!this.uiBlocked) {
-      console.log('rotating...');
       this.uiBlocked = true;
       this.clearSelection();
       sprite.alpha = 0.4;
