@@ -27,6 +27,8 @@ export class Game extends Phaser.State {
 
   public create() {
     this.backyard = this.game.add.sprite(0, 0, 'backyard');
+    this.backyard.inputEnabled = true;
+    this.backyard.events.onInputDown.add(this.placeItem, this);
 
     this.pet = this.game.add.sprite(100, 400, 'pet');
     this.pet.anchor.setTo(0.5);
@@ -79,6 +81,16 @@ export class Game extends Phaser.State {
       this.clearSelection();
       sprite.alpha = 0.4;
       this.selectedItem = sprite;
+    }
+  }
+
+  private placeItem(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
+    if (this.selectedItem && !this.uiBlocked) {
+      const x = pointer.position.x;
+      const y = pointer.position.y;
+      const newItem = this.game.add.sprite(x, y, this.selectedItem.key);
+      newItem.anchor.setTo(0.5);
+      newItem.data = this.selectedItem.data;
     }
   }
 
