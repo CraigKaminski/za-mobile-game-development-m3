@@ -91,6 +91,19 @@ export class Game extends Phaser.State {
       const newItem = this.game.add.sprite(x, y, this.selectedItem.key);
       newItem.anchor.setTo(0.5);
       newItem.data = this.selectedItem.data;
+      this.uiBlocked = true;
+      const petMovement = this.add.tween(this.pet);
+      petMovement.to({ x, y }, 700);
+      petMovement.onComplete.add(() => {
+        newItem.destroy();
+        this.uiBlocked = false;
+        for (const stat in newItem.data) {
+          if (newItem.data.hasOwnProperty(stat)) {
+            this.pet.data[stat] += newItem.data[stat];
+          }
+        }
+      });
+      petMovement.start();
     }
   }
 
