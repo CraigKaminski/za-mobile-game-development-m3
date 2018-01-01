@@ -3,11 +3,13 @@ export class Game extends Phaser.State {
   private backyard: Phaser.Sprite;
   private buttons: Phaser.Sprite[];
   private candy: Phaser.Sprite;
+  private funText: Phaser.Text;
+  private healthText: Phaser.Text;
   private pet: Phaser.Sprite;
   private rotate: Phaser.Sprite;
   private selectedItem: Phaser.Sprite | null;
   private toy: Phaser.Sprite;
-  private uiBlocked: boolean;
+  private uiBlocked = false;
 
   public init() {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -68,6 +70,16 @@ export class Game extends Phaser.State {
     ];
 
     this.selectedItem = null;
+
+    const style = {
+      font: '20px Arial',
+      fill: '#fff',
+    };
+    this.game.add.text(10, 20, 'Health:', style);
+    this.game.add.text(140, 20, 'Fun:', style);
+    this.healthText = this.game.add.text(80, 20, '', style);
+    this.funText = this.game.add.text(185, 20, '', style);
+    this.refreshStats();
   }
 
   private clearSelection() {
@@ -95,7 +107,6 @@ export class Game extends Phaser.State {
       const petMovement = this.add.tween(this.pet);
       petMovement.to({ x, y }, 700);
       petMovement.onComplete.add(() => {
-        newItem.destroy();
         this.pet.animations.play('funnyfaces');
         this.uiBlocked = false;
         for (const stat in newItem.data) {
@@ -103,9 +114,16 @@ export class Game extends Phaser.State {
             this.pet.data[stat] += newItem.data[stat];
           }
         }
+        newItem.destroy();
+        this.refreshStats();
       });
       petMovement.start();
     }
+  }
+
+  private refreshStats() {
+    this.healthText.text = this.pet.data.health;
+    this.funText.text = this.pet.data.fun;
   }
 
   private rotatePet(sprite: Phaser.Sprite, pointer: Phaser.Pointer) {
@@ -120,6 +138,7 @@ export class Game extends Phaser.State {
         this.uiBlocked = false;
         sprite.alpha = 1;
         this.pet.data.fun += 10;
+        this.refreshStats();
       });
       petRotation.start();
     }
