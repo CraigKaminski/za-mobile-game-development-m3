@@ -88,6 +88,15 @@ export class Game extends Phaser.State {
       this.uiBlocked = true;
       this.clearSelection();
       sprite.alpha = 0.4;
+
+      const petRotation = this.game.add.tween(this.pet);
+      petRotation.to({ angle: '+720' }, 1000);
+      petRotation.onComplete.add(() => {
+        this.uiBlocked = false;
+        sprite.alpha = 1;
+        this.pet.data.fun += 10;
+      });
+      petRotation.start();
     }
   }
 }
