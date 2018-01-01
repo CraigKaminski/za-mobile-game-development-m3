@@ -8,6 +8,7 @@ export class Game extends Phaser.State {
   private pet: Phaser.Sprite;
   private rotate: Phaser.Sprite;
   private selectedItem: Phaser.Sprite | null;
+  private statsDecreaser: Phaser.TimerEvent;
   private toy: Phaser.Sprite;
   private uiBlocked = false;
 
@@ -80,6 +81,16 @@ export class Game extends Phaser.State {
     this.healthText = this.game.add.text(80, 20, '', style);
     this.funText = this.game.add.text(185, 20, '', style);
     this.refreshStats();
+
+    this.statsDecreaser = this.game.time.events.loop(Phaser.Timer.SECOND * 5, this.reduceProperties, this);
+  }
+
+  public update() {
+    if (this.pet.data.health <= 0 || this.pet.data.fun <= 0) {
+      this.pet.frame = 4;
+      this.uiBlocked = true;
+      this.game.time.events.add(Phaser.Timer.SECOND * 2, this.gameOver, this);
+    }
   }
 
   private clearSelection() {
@@ -119,6 +130,16 @@ export class Game extends Phaser.State {
       });
       petMovement.start();
     }
+  }
+
+  private gameOver() {
+    this.game.state.restart();
+  }
+
+  private reduceProperties() {
+    this.pet.data.health -= 10;
+    this.pet.data.fun -= 15;
+    this.refreshStats();
   }
 
   private refreshStats() {
